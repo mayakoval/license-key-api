@@ -1,5 +1,7 @@
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
 from pydantic import BaseModel
+
+import auth
 
 app = FastAPI()
 
@@ -7,11 +9,12 @@ app = FastAPI()
 class RequestModel(BaseModel):
     full_name: str
     software_package: str
-    secret: str
+
 
 # Endpoint generating key: takes name, software and secret
-@app.post("/key-generator/")
-async def generate_key(request):
+@app.post("/key-generator/", dependencies=[Depends(auth.get_api_key)])
+async def generate_key(request: RequestModel):
     return request
+
 
 # Endpoint validating the key
