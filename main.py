@@ -1,9 +1,13 @@
+import os
+from dotenv import load_dotenv
 from fastapi import Depends, FastAPI
 from pydantic import BaseModel
 
 import auth
 
 app = FastAPI()
+
+load_dotenv(dotenv_path=".env")
 
 # Model for request body
 class RequestModel(BaseModel):
@@ -13,7 +17,7 @@ class RequestModel(BaseModel):
 
 # key generator
 def key_generator(request: RequestModel):
-    api_key = "test"
+    api_key = os.getenv("API_KEY")
     full_key = request.full_name + request.software_package + api_key
     return full_key
 
