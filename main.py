@@ -1,14 +1,11 @@
 import os
-from dotenv import load_dotenv
-from fastapi import Depends, FastAPI
+from fastapi import Depends, FastAPI, HTTPException, Header, status
 from pydantic import BaseModel
 
 import auth
 import crypto
 
 app = FastAPI()
-
-load_dotenv(dotenv_path=".env")
 
 
 class RequestModel(BaseModel):
@@ -29,4 +26,12 @@ async def generate_key(request: RequestModel):
     return {"key": encrypted_key}
 
 
-# Endpoint validating the key
+@app.get("/key-validator")
+async def validate_key(user_name: str = Header(), license_key: str = Header()):
+    result = await crypto.decrypt_key(license_key, user_name)
+    if result == True:
+        raise HTTPException(
+            status_code=status.HTTP_204_NO_CONTENT,
+        )
+    else:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
