@@ -5,7 +5,12 @@ from pydantic import BaseModel
 import auth
 import crypto
 
-app = FastAPI()
+app = FastAPI(
+    title="Key generator-validator",
+    description="API for generating a crypted license key and key validation",
+    version="v1",
+    docs_url="/",
+)
 
 
 class RequestModel(BaseModel):
