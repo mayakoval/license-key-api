@@ -4,6 +4,7 @@ from fastapi import Depends, FastAPI
 from pydantic import BaseModel
 
 import auth
+import crypto
 
 app = FastAPI()
 
@@ -28,7 +29,8 @@ async def generate_key(request: RequestModel):
     # generate key
     generated_key = key_generator(request)
     # hash the generated key
-    return generated_key
+    encrypted_key = await crypto.encrypt_key(generated_key)
+    return {"key": encrypted_key}
 
 
 # Endpoint validating the key
