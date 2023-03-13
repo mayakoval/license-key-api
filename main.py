@@ -15,7 +15,7 @@ class RequestModel(BaseModel):
 
 def key_generator(request: RequestModel):
     api_key = os.getenv("API_KEY")
-    full_key = request.full_name + request.software_package + api_key
+    full_key = request.full_name + " " + request.software_package + api_key
     return full_key
 
 
@@ -26,8 +26,11 @@ async def generate_key(request: RequestModel):
     return {"key": encrypted_key}
 
 
-@app.get("/key-validator")
-async def validate_key(user_name: str = Header(), license_key: str = Header()):
+@app.get("/key-validator/")
+async def validate_key(
+    user_name: str = Header(),
+    license_key: str = Header(),
+):
     result = await crypto.decrypt_key(license_key, user_name)
     if result == True:
         raise HTTPException(

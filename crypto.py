@@ -14,6 +14,6 @@ async def encrypt_key(generated_key: str):
 async def decrypt_key(license_key: str, user_name: str):
     decrypted_key = (fernet.decrypt(license_key)).decode()
     name = decrypted_key.split()[:2]
-    full_name = name[0] + " " + name[1]
-    if user_name == full_name:
+    full_name = name[0].lower() + " " + name[1].lower()
+    if user_name.lower() == full_name:
         return True
