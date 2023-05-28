@@ -18,7 +18,7 @@ class RequestModel(BaseModel):
     software_package: str
 
 
-def key_generator(request: RequestModel):
+def key_generator(request: RequestModel) -> str:
     api_key = os.getenv("API_KEY")
     full_key = request.full_name + " " + request.software_package + api_key
     return full_key
