@@ -11,7 +11,7 @@ api_key_header = APIKeyHeader(name="access_token", auto_error=False)
 api_key = os.getenv("API_KEY")
 
 
-async def get_api_key(api_key_header: str = Security(api_key_header)):
+def get_api_key(api_key_header: str = Security(api_key_header)):
     if api_key_header == api_key:
         return api_key_header
     else:
