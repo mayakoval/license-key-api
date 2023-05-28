@@ -25,18 +25,18 @@ def key_generator(request: RequestModel) -> str:
 
 
 @app.post("/key-generator/", dependencies=[Depends(auth.get_api_key)])
-async def generate_key(request: RequestModel):
+def generate_key(request: RequestModel):
     generated_key = key_generator(request)
-    encrypted_key = await crypto.encrypt_key(generated_key)
+    encrypted_key = crypto.encrypt_key(generated_key)
     return {"key": encrypted_key}
 
 
 @app.get("/key-validator/")
-async def validate_key(
+def validate_key(
     user_name: str = Header(),
     license_key: str = Header(),
 ):
-    result = await crypto.decrypt_key(license_key, user_name)
+    result = crypto.decrypt_key(license_key, user_name)
     if result == True:
         raise HTTPException(
             status_code=status.HTTP_204_NO_CONTENT,
