@@ -17,3 +17,5 @@ def decrypt_key(license_key: str, user_name: str) -> bool:
     full_name = name[0].lower() + " " + name[1].lower()
     if user_name.lower() == full_name:
         return True
+    else:
+        return False
