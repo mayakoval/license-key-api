@@ -13,30 +13,31 @@ app = FastAPI(
 )
 
 
-class RequestModel(BaseModel):
+class GeneratorRequestModel(BaseModel):
     full_name: str
     software_package: str
 
+class ValidatorRequestModel(BaseModel):
+    full_name: str
+    key: str
 
-def key_generator(request: RequestModel) -> str:
+
+def key_generator(request: GeneratorRequestModel) -> str:
     api_key = os.getenv("API_KEY")
     full_key = request.full_name + " " + request.software_package + api_key
     return full_key
 
 
 @app.post("/key-generator/", dependencies=[Depends(auth.get_api_key)])
-def generate_key(request: RequestModel):
+def generate_key(request: GeneratorRequestModel):
     generated_key = key_generator(request)
     encrypted_key = crypto.encrypt_key(generated_key)
     return {"key": encrypted_key}
 
 
-@app.get("/key-validator/")
-def validate_key(
-    user_name: str = Header(),
-    license_key: str = Header(),
-):
-    result = crypto.decrypt_key(license_key, user_name)
+@app.post("/key-validator/", dependencies=[Depends(auth.get_api_key)])
+def validate_key(request: ValidatorRequestModel):
+    result = crypto.decrypt_key(request.key, request.full_name)
     if result == True:
         raise HTTPException(
             status_code=status.HTTP_204_NO_CONTENT,
