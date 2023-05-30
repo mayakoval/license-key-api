@@ -22,12 +22,12 @@ To start the app locally:
 uvicorn main:app --reload
 ```
 
+> **Note**  **API key** (access token) is mandatory for both requests.
+  If using FastAPI interface, use Authorize button for providing API key.
+
 Use FastAPI interface for accessing the endpoints or the following CURL on command line:
 
 ### Generating key
-
-Note: **API key** (access token) is mandatory.
-If using FastAPI interface, use Authorize button for providing API key.
 
 Update request body with the **user name** and name of **software package**.
 
@@ -45,13 +45,25 @@ curl -X 'POST' \
 
 ### Validating key
 
-Note: **user name** and encrypted **license key** must be provided in request header.
-User name is not case-sensitive.
+**User name** and encrypted **license key** must be provided as a request body.
+> **Note** User name is not case-sensitive.
 
 ```bash
-curl -X 'GET' \
+curl -X 'POST' \
   'http://local-url/key-validator/' \
   -H 'accept: application/json' \
-  -H 'user-name: Your Name' \
-  -H 'license-key: encrypted-key'
+  -H 'access_token: secret' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "full_name": "your name",
+  "key": "encrypted-key"
+}'
+```
+
+## Testing
+
+From the project root file run the following command:
+
+```bash
+pytest
 ```
